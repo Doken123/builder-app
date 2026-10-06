@@ -3,7 +3,7 @@ name: Build APK
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
   build:
@@ -25,19 +25,34 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+        with:
+          cmdline-tools-version: 11076708
+
+      - name: Accept Android licenses
+        run: |
+          yes | sdkmanager --licenses || true
 
       - name: Install Cordova
         run: npm install -g cordova
 
-      - name: Create and Build Project
+      - name: Create Cordova Project
         run: |
-          cordova create build com.tuan.myapp MyApp
+          cordova create build com.tuan.myapp "MyApp"
           cd build
           cordova platform add android
+
+      - name: Build APK
+        run: |
+          cd build
           cordova build android
+
+      - name: Rename APK
+        run: |
+          cd build/platforms/android/app/build/outputs/apk/debug/
+          mv app-debug.apk MyApp.apk
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: app-debug-apk
-          path: build/platforms/android/app/build/outputs/apk/debug/app-debug.apk
+          name: MyApp-APK
+          path: build/platforms/android/app/build/outputs/apk/debug/MyApp.apk
