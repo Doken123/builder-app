@@ -1,15 +1,38 @@
-name: Build APK
+name: Build APK Custom
 
 on:
   workflow_dispatch:
-  push:
-    branches: [ main, master ]
+    inputs:
+      app_name:
+        description: 'Nama Aplikasi (tanpa spasi)'
+        required: true
+        default: 'MyApp'
+      app_id:
+        description: 'Application ID (contoh: com.tuan.myapp)'
+        required: true
+        default: 'com.tuan.myapp'
+      source_type:
+        description: 'Tipe sumber: html / url'
+        required: true
+        default: 'html'
+        type: choice
+        options:
+          - html
+          - url
+      source_url:
+        description: 'URL (kalo pilih "url")'
+        required: false
+        default: ''
+      html_content:
+        description: 'HTML (kalo pilih "html")'
+        required: false
+        default: '<h1>Hello Tuan Kepala CPY!</h1>'
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup Node.js
@@ -35,9 +58,19 @@ jobs:
 
       - name: Create Cordova Project
         run: |
-          cordova create build com.tuan.myapp "MyApp"
+          cordova create build ${{ github.event.inputs.app_id }} "${{ github.event.inputs.app_name }}"
           cd build
           cordova platform add android
+
+      - name: Inject HTML/URL
+        run: |
+          cd build/www
+          rm -f index.html
+          if [ "${{ github.event.inputs.source_type }}" = "url" ]; then
+            printf '%s' '<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>'"${{ github.event.inputs.app_name }}"'</title><style>html,body,iframe{margin:0;padding:0;width:100%;height:100%;border:0;overflow:hidden}</style></head><body><iframe src="${{ github.event.inputs.source_url }}" allowfullscreen></iframe></body></html>' > index.html
+          else
+            printf '%s' '${{ github.event.inputs.html_content }}' > index.html
+          fi
 
       - name: Build APK
         run: |
@@ -47,10 +80,11 @@ jobs:
       - name: Rename APK
         run: |
           cd build/platforms/android/app/build/outputs/apk/debug/
-          mv app-debug.apk MyApp.apk
+          mv app-debug.apk "${{ github.event.inputs.app_name }}.apk"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: MyApp-APK
-          path: build/platforms/android/app/build/outputs/apk/debug/MyApp.apk
+          name: ${{ github.event.inputs.app_name }}-APK
+          path: build/platforms/android/app/build/outputs/apk/debug/${{ github.event.inputs.app_name }}.apk
+          retention-days: 30
