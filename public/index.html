@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>⚡ CODE COMPILER — TUAN KENZO</title>
+<title>⚡ APK BUILDER — TUAN KENZO</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -20,8 +20,12 @@
     background: var(--bg-dark);
     color: #e0e0e0;
     min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     padding: 16px;
     overflow-x: hidden;
+    position: relative;
   }
   body::before {
     content: '';
@@ -37,16 +41,29 @@
     0% { transform: translate(0, 0); }
     100% { transform: translate(40px, 40px); }
   }
-  .container {
+  .box {
     position: relative; z-index: 2;
-    max-width: 1000px;
-    margin: 0 auto;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 0, 64, 0.4);
+    border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow:
+      0 0 40px rgba(255, 0, 64, 0.25),
+      0 0 80px rgba(179, 0, 255, 0.15);
+    animation: boxIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   }
-  .header { text-align: center; margin-bottom: 20px; }
+  @keyframes boxIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
   .logo {
     font-family: 'Orbitron', sans-serif;
-    font-size: 28px; font-weight: 900;
-    letter-spacing: 2px;
+    font-size: 26px; font-weight: 900;
+    letter-spacing: 2px; text-align: center;
     background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-cyan));
     background-size: 200% auto;
     -webkit-background-clip: text;
@@ -58,317 +75,215 @@
     0% { background-position: 0% center; }
     100% { background-position: 200% center; }
   }
-  .sub { color: #666; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; margin-top: 4px; }
-  .toolbar {
-    display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    padding: 12px; border-radius: 12px;
-    border: 1px solid rgba(255, 0, 64, 0.3);
+  .sub {
+    text-align: center; color: #666; font-size: 11px;
+    margin-top: 6px; margin-bottom: 22px;
+    letter-spacing: 3px; text-transform: uppercase;
   }
-  select, button {
+  label {
+    display: block; margin: 14px 0 6px;
+    font-size: 11px; color: #888;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    font-weight: 600;
+  }
+  label::before { content: '▸ '; color: var(--neon-pink); }
+  input, textarea {
+    width: 100%; padding: 12px 14px;
     background: rgba(0,0,0,0.5);
     border: 1px solid #2a2a35;
-    color: #fff;
-    padding: 10px 14px;
-    border-radius: 8px;
+    border-radius: 10px; color: #fff;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.25s;
+    font-size: 13px; transition: all 0.25s ease;
   }
-  select:focus, button:focus { outline: none; border-color: var(--neon-pink); }
-  .btn-run {
+  input:focus, textarea:focus {
+    outline: none; border-color: var(--neon-pink);
+    box-shadow: 0 0 0 3px rgba(255,0,64,0.15), 0 0 20px rgba(255,0,64,0.3);
+  }
+  textarea { resize: vertical; min-height: 90px; font-size: 12px; line-height: 1.5; }
+  .tabs {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 6px; margin-top: 10px; padding: 5px;
+    background: rgba(0,0,0,0.4); border-radius: 12px;
+    border: 1px solid #1a1a22;
+  }
+  .tabs button {
+    padding: 10px 8px; background: transparent; color: #666;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+    border: none; border-radius: 8px; cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: 'JetBrains Mono', monospace; text-transform: uppercase;
+  }
+  .tabs button.active {
     background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
-    border: none; font-weight: 700;
-    box-shadow: 0 4px 15px rgba(255,0,64,0.4);
-    margin-left: auto;
+    color: #fff; box-shadow: 0 0 20px rgba(255,0,64,0.5);
   }
-  .btn-run:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(255,0,64,0.6); }
-  .btn-run:disabled { opacity: 0.5; cursor: not-allowed; }
-  .btn-clear { background: rgba(255,0,64,0.15); border-color: var(--neon-pink); color: var(--neon-pink); }
-  .editor-wrap {
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 0, 64, 0.3);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 12px;
+  .hidden { display: none !important; }
+  .file-wrap {
+    position: relative; border: 2px dashed #2a2a35;
+    border-radius: 10px; padding: 20px; text-align: center;
+    transition: all 0.25s; cursor: pointer;
+    background: rgba(0,0,0,0.3);
   }
-  .editor-header {
-    background: rgba(0,0,0,0.5);
-    padding: 8px 14px;
-    font-size: 11px;
-    color: #888;
-    letter-spacing: 1.5px;
-    border-bottom: 1px solid #1a1a22;
-    display: flex;
-    justify-content: space-between;
+  .file-wrap:hover { border-color: var(--neon-pink); background: rgba(255,0,64,0.05); }
+  .file-wrap input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
   }
-  .editor-header .lang { color: var(--neon-cyan); }
-  #code {
-    width: 100%;
-    min-height: 280px;
-    background: #0a0a0f;
-    border: none;
-    color: #e0e0e0;
-    padding: 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    line-height: 1.6;
-    resize: vertical;
-    outline: none;
+  .file-wrap .icon { font-size: 28px; margin-bottom: 6px; display: block; }
+  .file-wrap .text { font-size: 12px; color: #888; }
+  .btn-build {
+    margin-top: 22px; width: 100%; padding: 15px;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    background-size: 200% auto; border: none; border-radius: 12px;
+    color: #fff; font-family: 'Orbitron', sans-serif;
+    font-size: 14px; font-weight: 900; letter-spacing: 2px;
+    cursor: pointer; transition: all 0.3s ease;
+    box-shadow: 0 8px 25px rgba(255,0,64,0.4); text-transform: uppercase;
   }
-  .stdin-wrap {
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(179, 0, 255, 0.3);
-    border-radius: 12px;
-    overflow: hidden;
-    margin-bottom: 12px;
-  }
-  .stdin-header {
-    background: rgba(179, 0, 255, 0.08);
-    padding: 8px 14px;
-    font-size: 11px;
-    color: var(--neon-purple);
-    letter-spacing: 1.5px;
-    border-bottom: 1px solid rgba(179, 0, 255, 0.2);
-  }
-  #stdin {
-    width: 100%;
-    min-height: 60px;
-    background: #0a0a0f;
-    border: none;
-    color: #e0e0e0;
-    padding: 12px 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    resize: vertical;
-    outline: none;
-  }
-  .output-wrap {
-    background: var(--bg-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(0, 240, 255, 0.3);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-  .output-header {
-    background: rgba(0, 240, 255, 0.08);
-    padding: 8px 14px;
-    font-size: 11px;
-    color: var(--neon-cyan);
-    letter-spacing: 1.5px;
-    border-bottom: 1px solid rgba(0, 240, 255, 0.2);
-    display: flex;
-    justify-content: space-between;
-  }
-  #output {
-    background: #0a0a0f;
-    color: #00ff66;
-    padding: 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    line-height: 1.6;
-    min-height: 140px;
-    white-space: pre-wrap;
-    word-break: break-word;
-  }
-  #output.error { color: #ff4466; }
+  .btn-build:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(255,0,64,0.6); }
+  .btn-build:disabled { opacity: 0.5; cursor: not-allowed; }
   .status {
-    text-align: center;
-    margin-top: 12px;
-    font-size: 12px;
-    color: #666;
-    min-height: 18px;
+    margin-top: 16px; padding: 14px; border-radius: 10px;
+    font-size: 12px; display: none;
+    border-left: 4px solid; line-height: 1.5;
   }
-  .status.running { color: var(--neon-cyan); }
-  .status.ok { color: #00ff66; }
-  .status.err { color: #ff4466; }
+  .status.info { display: block; background: rgba(0,240,255,0.08); color: var(--neon-cyan); border-color: var(--neon-cyan); }
+  .status.ok { display: block; background: rgba(0,255,100,0.08); color: #00ff66; border-color: #00ff66; }
+  .status.err { display: block; background: rgba(255,0,64,0.08); color: #ff4466; border-color: var(--neon-pink); }
+  .spinner {
+    display: inline-block; width: 12px; height: 12px;
+    border: 2px solid rgba(0,240,255,0.3);
+    border-top-color: var(--neon-cyan);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+    margin-right: 8px; vertical-align: middle;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
   .footer {
-    text-align: center;
-    margin-top: 20px;
-    font-size: 10px;
-    color: #333;
-    letter-spacing: 2px;
+    margin-top: 20px; text-align: center;
+    font-size: 10px; color: #333; letter-spacing: 2px; text-transform: uppercase;
   }
   .footer span { color: var(--neon-pink); text-shadow: 0 0 10px var(--neon-pink); }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: #111; }
-  ::-webkit-scrollbar-thumb { background: var(--neon-pink); border-radius: 3px; }
-  @media (max-width: 600px) {
-    body { padding: 10px; }
-    .logo { font-size: 20px; }
-    .sub { font-size: 9px; letter-spacing: 2px; }
-    #code { font-size: 12px; min-height: 200px; }
-    .toolbar { padding: 8px; gap: 6px; }
-    select, button { padding: 8px 10px; font-size: 12px; }
-    .btn-run { margin-left: 0; width: 100%; }
-    .editor-header, .stdin-header, .output-header { font-size: 10px; }
+  @media (max-width: 480px) {
+    .box { padding: 22px 18px; border-radius: 16px; }
+    .logo { font-size: 22px; }
+    .btn-build { font-size: 12px; padding: 14px; }
   }
 </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <div class="logo">⚡ CODE COMPILER</div>
-    <div class="sub">Run Code · Any Language · Instant</div>
+<div class="box">
+  <div class="logo">⚡ APK BUILDER</div>
+  <div class="sub">HTML · ZIP · URL → APK</div>
+
+  <label>Nama Aplikasi</label>
+  <input id="appName" placeholder="MyApp" value="MyApp">
+
+  <label>Application ID</label>
+  <input id="appId" placeholder="com.tuan.myapp" value="com.tuan.myapp">
+
+  <label>Pilih Sumber</label>
+  <div class="tabs">
+    <button data-type="html" class="active">📄 HTML</button>
+    <button data-type="zip">📦 ZIP</button>
+    <button data-type="url">🌐 URL</button>
   </div>
 
-  <div class="toolbar">
-    <select id="langSelect">
-      <option value="python">🐍 Python 3</option>
-      <option value="javascript">⚡ JavaScript (Node)</option>
-      <option value="c++">🔧 C++ (GCC)</option>
-      <option value="c">📘 C (GCC)</option>
-      <option value="java">☕ Java</option>
-      <option value="ruby">💎 Ruby</option>
-      <option value="rust">🦀 Rust</option>
-      <option value="go">🐹 Go</option>
-      <option value="php">🐘 PHP</option>
-      <option value="typescript">📘 TypeScript</option>
-    </select>
-    <button class="btn-clear" id="btnClear">🗑️ Clear</button>
-    <button class="btn-run" id="btnRun">▶️ RUN CODE</button>
+  <div id="panel-html" class="panel">
+    <label>Kode HTML</label>
+    <textarea id="html" placeholder="<h1>Hello World</h1>"></textarea>
   </div>
 
-  <div class="editor-wrap">
-    <div class="editor-header">
-      <span>📝 CODE EDITOR</span>
-      <span class="lang" id="langLabel">Python 3</span>
+  <div id="panel-zip" class="panel hidden">
+    <label>Upload ZIP</label>
+    <div class="file-wrap">
+      <input type="file" id="zip" accept=".zip">
+      <span class="icon">📦</span>
+      <div class="text">Tap buat pilih file .zip</div>
+      <div class="text" style="color:#555;margin-top:4px;font-size:10px;">Harus ada index.html</div>
     </div>
-    <textarea id="code" spellcheck="false">print("Hello, Tuan Kepala CPY! 🔥")</textarea>
   </div>
 
-  <div class="stdin-wrap">
-    <div class="stdin-header">⌨️ STDIN (input kalo program lu butuh)</div>
-    <textarea id="stdin" placeholder="Ketik input di sini kalo program lu pake input()..." spellcheck="false"></textarea>
+  <div id="panel-url" class="panel hidden">
+    <label>URL Website</label>
+    <input id="url" placeholder="https://example.com">
   </div>
 
-  <div class="output-wrap">
-    <div class="output-header">
-      <span>📤 OUTPUT</span>
-      <span id="execTime"></span>
-    </div>
-    <div id="output">Tekan RUN CODE buat jalanin kode lu...</div>
-  </div>
+  <button id="btnBuild" class="btn-build">🚀 Build APK</button>
+  <div id="status" class="status"></div>
 
-  <div class="status" id="status"></div>
   <div class="footer">Powered by <span>TUAN KEPALA CPY</span></div>
 </div>
 
 <script>
-  const codeEl = document.getElementById('code');
-  const stdinEl = document.getElementById('stdin');
-  const outputEl = document.getElementById('output');
+  let currentType = 'html';
+
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentType = btn.dataset.type;
+      document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById('panel-' + currentType).classList.remove('hidden');
+    };
+  });
+
   const statusEl = document.getElementById('status');
-  const execTimeEl = document.getElementById('execTime');
-  const langSelect = document.getElementById('langSelect');
-  const langLabel = document.getElementById('langLabel');
+  function setStatus(msg, type, loading = false) {
+    statusEl.className = 'status ' + type;
+    statusEl.innerHTML = (loading ? '<span class="spinner"></span>' : '') + msg;
+  }
 
-  const PISTON_URL = 'https://emkc.org/api/v2/piston/execute';
+  document.getElementById('btnBuild').onclick = async () => {
+    const appName = document.getElementById('appName').value.trim();
+    const appId = document.getElementById('appId').value.trim();
 
-  langSelect.onchange = () => {
-    langLabel.textContent = langSelect.options[langSelect.selectedIndex].text;
-  };
-
-  document.getElementById('btnClear').onclick = () => {
-    codeEl.value = '';
-    stdinEl.value = '';
-    outputEl.textContent = 'Tekan RUN CODE buat jalanin kode lu...';
-    outputEl.className = '';
-    statusEl.textContent = '';
-    statusEl.className = 'status';
-    execTimeEl.textContent = '';
-  };
-
-  document.getElementById('btnRun').onclick = async () => {
-    const code = codeEl.value;
-    const stdin = stdinEl.value;
-    const lang = langSelect.value;
-
-    if (!code.trim()) {
-      outputEl.textContent = 'KODE KOSONG, KONTOL!';
-      outputEl.className = 'error';
+    if (!appName || !appId) {
+      setStatus('❌ Nama & ID wajib diisi, BANGSAT!', 'err');
       return;
     }
 
-    const btn = document.getElementById('btnRun');
+    const fd = new FormData();
+    fd.append('appName', appName);
+    fd.append('appId', appId);
+    fd.append('type', currentType);
+
+    if (currentType === 'html') {
+      const html = document.getElementById('html').value;
+      if (!html.trim()) return setStatus('❌ HTML kosong KONTOL!', 'err');
+      fd.append('html', html);
+    } 
+    else if (currentType === 'zip') {
+      const f = document.getElementById('zip').files[0];
+      if (!f) return setStatus('❌ Pilih file ZIP dulu ANJING!', 'err');
+      fd.append('file', f);
+    } 
+    else if (currentType === 'url') {
+      const url = document.getElementById('url').value.trim();
+      if (!url) return setStatus('❌ URL kosong BANGSAT!', 'err');
+      fd.append('url', url);
+    }
+
+    const btn = document.getElementById('btnBuild');
     btn.disabled = true;
-    outputEl.textContent = '⏳ Lagi jalanin kode... sabar ANJING!';
-    outputEl.className = '';
-    statusEl.textContent = 'Menghubungi Piston API...';
-    statusEl.className = 'status running';
-    execTimeEl.textContent = '';
-    const t0 = performance.now();
+    setStatus('⏳ Lagi build APK... sabar KONTOL, butuh 2-5 menit!', 'info', true);
 
     try {
-      const res = await fetch(PISTON_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          language: lang,
-          version: '*',
-          files: [{ content: code }],
-          stdin: stdin
-        })
-      });
-
-      if (!res.ok) throw new Error('API error: ' + res.status + ' ' + res.statusText);
-      const result = await res.json();
-
-      let out = '';
-      if (result.run && result.run.stdout) out += result.run.stdout;
-      if (result.run && result.run.stderr) out += '\n[STDERR]\n' + result.run.stderr;
-      if (result.compile && result.compile.stderr) out += '\n[COMPILE ERROR]\n' + result.compile.stderr;
-      if (result.compile && result.compile.output) out += '\n[COMPILE]\n' + result.compile.output;
-      if (result.message) out += '\n[MESSAGE]\n' + result.message;
-
-      if (!out) out = '(Ga ada output)';
-
-      const t1 = performance.now();
-      const dur = ((t1 - t0) / 1000).toFixed(2);
-
-      outputEl.textContent = out;
-      const isError = (result.run && result.run.stderr) || (result.compile && result.compile.stderr);
-      outputEl.className = isError ? 'error' : '';
-      statusEl.textContent = isError ? '❌ Selesai dengan error' : '✅ Selesai!';
-      statusEl.className = isError ? 'status err' : 'status ok';
-      execTimeEl.textContent = dur + 's';
-
+      const res = await fetch('/build', { method: 'POST', body: fd });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Gagal build' }));
+        throw new Error(err.error);
+      }
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = appName + '.apk';
+      a.click();
+      setStatus('✅ APK jadi! Cek folder download lu, TUAN!', 'ok');
     } catch (e) {
-      outputEl.textContent = '❌ ERROR: ' + e.message + '\n\nKemungkinan:\n- Server Piston lagi down\n- Koneksi lu bermasalah\n- Coba lagi beberapa saat';
-      outputEl.className = 'error';
-      statusEl.textContent = 'Gagal!';
-      statusEl.className = 'status err';
+      setStatus('❌ ' + e.message, 'err');
     } finally {
       btn.disabled = false;
     }
   };
-
-  codeEl.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-      e.preventDefault();
-      document.getElementById('btnRun').click();
-    }
-    if (e.key === 'Tab') {
-      e.preventDefault();
-      const start = codeEl.selectionStart;
-      const end = codeEl.selectionEnd;
-      codeEl.value = codeEl.value.substring(0, start) + '    ' + codeEl.value.substring(end);
-      codeEl.selectionStart = codeEl.selectionEnd = start + 4;
-    }
-  });
-
-  // Auto-save code ke localStorage
-  const SAVE_KEY = 'oxy_compiler_code';
-  const saved = localStorage.getItem(SAVE_KEY);
-  if (saved) codeEl.value = saved;
-
-  codeEl.addEventListener('input', () => {
-    localStorage.setItem(SAVE_KEY, codeEl.value);
-  });
 </script>
 </body>
 </html>
