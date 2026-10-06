@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>⚡ APK BUILDER — TUAN KEPALA CPY</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  :root {
+    --neon-pink: #ff0040;
+    --neon-purple: #b300ff;
+    --neon-cyan: #00f0ff;
+    --bg-dark: #050507;
+    --bg-card: rgba(20, 20, 28, 0.85);
+    --border-glow: rgba(255, 0, 64, 0.5);
+  }
+
+  html, body {
+    height: 100%;
+  }
+
+  body {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg-dark);
+    color: #e0e0e0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ==== ANIMATED GRID BACKGROUND ==== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 0, 64, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 0, 64, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    animation: gridMove 20s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @keyframes gridMove {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(40px, 40px); }
+  }
+
+  /* ==== GLOW ORBS ==== */
+  body::after {
+    content: '';
+    position: fixed;
+    width: 400px;
+    height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,0,64,0.25), transparent 70%);
+    top: -100px;
+    right: -100px;
+    filter: blur(60px);
+    animation: orbFloat 8s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @keyframes orbFloat {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-50px, 50px) scale(1.2); }
+  }
+
+  .orb-left {
+    position: fixed;
+    width: 350px;
+    height: 350px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(179, 0, 255, 0.25), transparent 70%);
+    bottom: -100px;
+    left: -100px;
+    filter: blur(60px);
+    animation: orbFloat2 10s ease-in-out infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  @keyframes orbFloat2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(60px, -40px); }
+  }
+
+  /* ==== MAIN BOX ==== */
+  .box {
+    position: relative;
+    z-index: 2;
+    background: var(--bg-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 0, 64, 0.4);
+    border-radius: 20px;
+    padding: 28px 24px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow:
+      0 0 40px rgba(255, 0, 64, 0.25),
+      0 0 80px rgba(179, 0, 255, 0.15),
+      inset 0 0 20px rgba(255, 0, 64, 0.05);
+    animation: boxIn 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes boxIn {
+    from { opacity: 0; transform: translateY(30px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ==== HEADER ==== */
+  .header {
+    text-align: center;
+    margin-bottom: 24px;
+    position: relative;
+  }
+
+  .logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(90deg, var(--neon-pink), var(--neon-purple), var(--neon-cyan));
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s linear infinite;
+    text-shadow: 0 0 30px rgba(255, 0, 64, 0.5);
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .sub {
+    color: #666;
+    font-size: 11px;
+    margin-top: 6px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    padding: 4px 12px;
+    background: rgba(0, 240, 255, 0.1);
+    border: 1px solid rgba(0, 240, 255, 0.3);
+    border-radius: 20px;
+    font-size: 10px;
+    color: var(--neon-cyan);
+    letter-spacing: 1px;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--neon-cyan);
+    box-shadow: 0 0 8px var(--neon-cyan);
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+  }
+
+  /* ==== FORM ==== */
+  label {
+    display: block;
+    margin: 16px 0 8px;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  label::before {
+    content: '▸ ';
+    color: var(--neon-pink);
+  }
+
+  input, textarea, select {
+    width: 100%;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.5);
+    border: 1px solid #2a2a35;
+    border-radius: 10px;
+    color: #fff;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    transition: all 0.25s ease;
+  }
+
+  input:focus, textarea:focus {
+    outline: none;
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 0 3px rgba(255, 0, 64, 0.15), 0 0 20px rgba(255, 0, 64, 0.3);
+    background: rgba(255, 0, 64, 0.03);
+  }
+
+  input::placeholder, textarea::placeholder {
+    color: #444;
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 90px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  /* ==== TABS ==== */
+  .tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 12px;
+    border: 1px solid #1a1a22;
+  }
+
+  .tabs button {
+    margin: 0;
+    padding: 10px 8px;
+    background: transparent;
+    color: #666;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+  }
+
+  .tabs button:hover {
+    color: #aaa;
+    background: rgba(255, 0, 64, 0.05);
+  }
+
+  .tabs button.active {
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255, 0, 64, 0.5);
+    transform: scale(1.02);
+  }
+
+  /* ==== PANEL ==== */
+  .panel {
+    animation: panelIn 0.3s ease;
+  }
+
+  @keyframes panelIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* ==== FILE INPUT CUSTOM ==== */
+  .file-wrap {
+    position: relative;
+    border: 2px dashed #2a2a35;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    transition: all 0.25s;
+    cursor: pointer;
+    background: rgba(0, 0, 0, 0.3);
+  }
+
+  .file-wrap:hover {
+    border-color: var(--neon-pink);
+    background: rgba(255, 0, 64, 0.05);
+  }
+
+  .file-wrap input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .file-wrap .icon {
+    font-size: 28px;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .file-wrap .text {
+    font-size: 12px;
+    color: #888;
+  }
+
+  /* ==== BUTTON ==== */
+  .btn-build {
+    margin-top: 22px;
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--neon-pink), var(--neon-purple));
+    background-size: 200% auto;
+    border: none;
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 14px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(255, 0, 64, 0.4);
+    text-transform: uppercase;
+  }
+
+  .btn-build::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    transition: left 0.5s;
+  }
+
+  .btn-build:hover::before {
+    left: 100%;
+  }
+
+  .btn-build:hover {
+    background-position: right center;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(255, 0, 64, 0.6);
+  }
+
+  .btn-build:active {
+    transform: translateY(0) scale(0.98);
+  }
+
+  .btn-build:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ==== STATUS ==== */
+  .status {
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 12px;
+    display: none;
+    border-left: 4px solid;
+    animation: statusIn 0.3s ease;
+    line-height: 1.5;
+  }
+
+  @keyframes statusIn {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  .status.info {
+    display: block;
+    background: rgba(0, 240, 255, 0.08);
+    color: var(--neon-cyan);
+    border-color: var(--neon-cyan);
+  }
+
+  .status.ok {
+    display: block;
+    background: rgba(0, 255, 100, 0.08);
+    color: #00ff66;
+    border-color: #00ff66;
+  }
+
+  .status.err {
+    display: block;
+    background: rgba(255, 0, 64, 0.08);
+    color: #ff4466;
+    border-color: var(--neon-pink);
+  }
+
+  /* ==== LOADING SPINNER ==== */
+  .spinner {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border: 2px solid rgba(0, 240, 255, 0.3);
+    border-top-color: var(--neon-cyan);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  /* ==== FOOTER ==== */
+  .footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 10px;
+    color: #333;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .footer span {
+    color: var(--neon-pink);
+    text-shadow: 0 0 10px var(--neon-pink);
+  }
+
+  /* ==== SCROLLBAR ==== */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: #111; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--neon-pink);
+    border-radius: 3px;
+  }
+
+  /* ==== MOBILE ==== */
+  @media (max-width: 480px) {
+    .box { padding: 22px 18px; border-radius: 16px; }
+    .logo { font-size: 22px; }
+    .btn-build { font-size: 12px; padding: 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="orb-left"></div>
+
+<div class="box">
+  <div class="header">
+    <div class="logo">⚡ APK BUILDER</div>
+    <div class="sub">HTML · ZIP · URL → APK</div>
+    <div class="status-badge">
+      <span class="dot"></span> SYSTEM ONLINE
+    </div>
+  </div>
+
+  <label>Nama Aplikasi</label>
+  <input id="appName" placeholder="MyApp" value="MyApp">
+
+  <label>Application ID</label>
+  <input id="appId" placeholder="com.tuan.myapp" value="com.tuan.myapp">
+
+  <label>Pilih Sumber</label>
+  <div class="tabs">
+    <button data-type="html" class="active">📄 HTML</button>
+    <button data-type="zip">📦 ZIP</button>
+    <button data-type="url">🌐 URL</button>
+  </div>
+
+  <div id="panel-html" class="panel">
+    <label>Kode HTML</label>
+    <textarea id="html" placeholder="<h1>Hello World</h1>"></textarea>
+  </div>
+
+  <div id="panel-zip" class="panel hidden">
+    <label>Upload ZIP</label>
+    <div class="file-wrap">
+      <input type="file" id="zip" accept=".zip">
+      <span class="icon">📦</span>
+      <div class="text">Tap buat pilih file .zip</div>
+      <div class="text" style="color:#555;margin-top:4px;font-size:10px;">Harus ada index.html</div>
+    </div>
+  </div>
+
+  <div id="panel-url" class="panel hidden">
+    <label>URL Website</label>
+    <input id="url" placeholder="https://example.com">
+  </div>
+
+  <button id="btnBuild" class="btn-build">🚀 Build APK</button>
+  <div id="status" class="status"></div>
+
+  <div class="footer">Powered by <span>KENZO👑</span></div>
+</div>
+
+<script>
+  let currentType = 'html';
+
+  document.querySelectorAll('.tabs button').forEach(btn => {
+    btn.onclick = () => {
+      document.querySelectorAll('.tabs button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentType = btn.dataset.type;
+      document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById('panel-' + currentType).classList.remove('hidden');
+    };
+  });
+
+  const statusEl = document.getElementById('status');
+  function setStatus(msg, type, loading = false) {
+    statusEl.className = 'status ' + type;
+    statusEl.innerHTML = (loading ? '<span class="spinner"></span>' : '') + msg;
+  }
+
+  document.getElementById('btnBuild').onclick = async () => {
+    const appName = document.getElementById('appName').value.trim();
+    const appId = document.getElementById('appId').value.trim();
+
+    if (!appName || !appId) {
+      setStatus('❌ Nama & ID wajib diisi, BANGSAT!', 'err');
+      return;
+    }
+
+    const fd = new FormData();
+    fd.append('appName', appName);
+    fd.append('appId', appId);
+    fd.append('type', currentType);
+
+    if (currentType === 'html') {
+      const html = document.getElementById('html').value;
+      if (!html.trim()) return setStatus('❌ HTML kosong KONTOL!', 'err');
+      fd.append('html', html);
+    } 
+    else if (currentType === 'zip') {
+      const f = document.getElementById('zip').files[0];
+      if (!f) return setStatus('❌ Pilih file ZIP dulu ANJING!', 'err');
+      fd.append('file', f);
+    } 
+    else if (currentType === 'url') {
+      const url = document.getElementById('url').value.trim();
+      if (!url) return setStatus('❌ URL kosong BANGSAT!', 'err');
+      fd.append('url', url);
+    }
+
+    const btn = document.getElementById('btnBuild');
+    btn.disabled = true;
+    setStatus('⏳ Lagi build APK... sabar KONTOL, butuh 2-5 menit!', 'info', true);
+
+    try {
+      const res = await fetch('/build', { method: 'POST', body: fd });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: 'Gagal build' }));
+        throw new Error(err.error);
+      }
+      const blob = await res.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = appName + '.apk';
+      a.click();
+      setStatus('✅ APK jadi! Cek folder download lu, TUAN!', 'ok');
+    } catch (e) {
+      setStatus('❌ ' + e.message, 'err');
+    } finally {
+      btn.disabled = false;
+    }
+  };
+</script>
+</body>
+  </html>
