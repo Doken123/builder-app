@@ -2,7 +2,6 @@ FROM node:20-bookworm
 
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Install Java 17 + tools + Gradle
 RUN apt-get update && apt-get install -y \
     openjdk-17-jdk \
     wget \
@@ -13,7 +12,6 @@ RUN apt-get update && apt-get install -y \
 ENV JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64
 ENV PATH=$PATH:$JAVA_HOME/bin
 
-# Android SDK
 ENV ANDROID_HOME=/opt/android-sdk
 ENV ANDROID_SDK_ROOT=/opt/android-sdk
 RUN mkdir -p $ANDROID_HOME/cmdline-tools && \
@@ -24,10 +22,10 @@ RUN mkdir -p $ANDROID_HOME/cmdline-tools && \
 
 ENV PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
 
+# ⚠️ INI YANG DIUBAH — install build-tools 36 + platform 36
 RUN yes | sdkmanager --licenses > /dev/null 2>&1 || true && \
-    sdkmanager "platform-tools" "platforms;android-33" "build-tools;33.0.0"
+    sdkmanager "platform-tools" "platforms;android-36" "build-tools;36.0.0"
 
-# Install Cordova
 RUN npm install -g cordova
 
 WORKDIR /app
